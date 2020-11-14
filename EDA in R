@@ -1,0 +1,55 @@
+This is an introductory Exploratory Data Analysis (EDA) using the R statistical programming language in R Studio. 
+I'm using the free version, R Studio Desktop. Download R for free here: https://cran.rstudio.com/
+
+The lines of code I used in this video are below:
+
+install.packages("tidyverse")
+library(tidyverse)
+
+Copy data from an Excel file using Ctrl+C, then type this into R to import the data:
+cars<-read.table(file="clipboard",sep="\t",header=TRUE)
+
+Create a basic histogram using the Horsepower variable:
+hist(cars$Horsepower)
+
+Add some colour, give the histogram a title and label the x-axis:
+hist(cars$Horsepower,col="purple",main="Distribution of Horsepower",xlab="Horsepower")
+
+Create a bar chart with Origin on the x-axis and count on the y-axis:
+ggplot(data=cars)+geom_bar(mapping=aes(x=Origin))
+
+Add some colour to the bar chart (colouring the bars by Origin):
+ggplot(data=cars)+geom_bar(mapping=aes(x=Origin,fill=Origin))
+
+Histogram in ggplot showing the Horsepower variable:
+ggplot(data=cars)+geom_histogram(mapping=aes(x=Horsepower),binwidth = 5)
+
+Try out a histogram using price (MSRP):
+hist(cars$MSRP)
+It produces an error message saying x must be numeric. Convert MSRP to numeric using this as.numeric code:
+cars$MSRP <- as.numeric(gsub('[$,]', '', cars$MSRP))
+Now try this again and it should work:
+hist(cars$MSRP)
+
+Histogram in ggplot showing price, coloured by origin:
+ggplot(data=cars)+geom_histogram(mapping=aes(x=MSRP,colour=Origin),binwidth = 10000)
+
+Create a subset of cars under $40k:
+cheap_cars <- cars %>% filter(MSRP<40000)
+ggplot(data=cheap_cars)+geom_histogram(mapping=aes(x=MSRP,colour=Origin),binwidth = 5000)
+
+Create a line chart instead of a histogram:
+ggplot(data=cheap_cars)+geom_freqpoly(mapping=aes(x=MSRP,colour=Origin),binwidth = 5000)
+ggplot(data=cheap_cars)+geom_freqpoly(mapping=aes(x=MSRP,colour=Cylinders),binwidth = 5000)
+
+Boxplots:
+ggplot(data=cheap_cars)+geom_boxplot(mapping=aes(y=MSRP,x=Origin,colour=Origin))
+ggplot(data=cars)+geom_boxplot(mapping=aes(y=MSRP,x=Origin,colour=Origin))
+
+Heatmaps using geom_tile:
+cars %>% count(Type,Origin) %>% ggplot(mapping = aes(x=Type,y=Origin))+geom_tile(mapping=aes(fill=n))
+
+Heatmap using the mtcars demo data:
+mtcars
+df <- scale(mtcars)
+heatmap(df, scale = "none")
