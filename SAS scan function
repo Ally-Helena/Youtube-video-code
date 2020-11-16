@@ -1,0 +1,57 @@
+/* Scan function: returns a word from a string */
+
+/* Syntax for the scan function: */
+/* SCAN(string, count, character-list, modifier) */
+
+/* Modifiers: 
+MO - the scan function returns words with a length of zero  
+DKO - returns only digits 
+*/
+
+data example1;
+	sentence = "This is an example sentence";
+/* 	if the count is positive, the scan starts the count from the left */
+	word1 = scan(sentence, 1, " ");
+/* 	if the count is negative, the scan starts the count from the right */
+	second_to_last_word = scan(sentence, -2);
+run;
+
+data ascii;
+	ASCII_of_space = rank(" ");
+run;
+
+data example2;	
+	product_code = "TJL-PKU-THY";
+	middle_word = scan(product_code,2);
+	if substr(scan(product_code,3),1,1)='T' then starts_with_T = 'Yes'; 
+run;	
+
+proc sql;
+	create table temp as
+	select scan(product_code,2) as middle_word
+	from example2;
+quit;	
+
+data example3;
+	sentence2 = "This is an example sentence   ";
+/* modifier MO returns words with a length of zero */
+	count_of_words = countw(sentence2," ",'MO');
+	do i=1 to count_of_words;
+	      word = scan(sentence2, i, " ", 'MO');
+      output;
+   end;
+   drop i count_of_words sentence2;
+run;
+
+data example4;
+	sentence3 = "His score was 156 out of 200.";
+/* modifier DKO returns only digits */
+	count_of_words = countw(sentence3, ,'DKO');
+	do i=1 to count_of_words;
+	      word = scan(sentence3, i, , 'DKO');
+      output;
+   end;
+   drop i count_of_words sentence3;
+run;
+
+	
